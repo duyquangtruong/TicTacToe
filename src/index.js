@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
+const boardSize = 3;
 
 function Square(props) {
   if (props.winLine) {
@@ -21,45 +22,47 @@ function Square(props) {
   );
 }
 
-class Board extends React.Component {
-  renderSquare(i) {
+function Board(props) {
+  const renderSquare = (i) => {
     if (
-      this.props.winLine &&
-      (i === this.props.winLine[0] ||
-        i === this.props.winLine[1] ||
-        i === this.props.winLine[2])
+      props.winLine &&
+      (i === props.winLine[0] ||
+        i === props.winLine[1] ||
+        i === props.winLine[2])
     ) {
       return (
         <Square
-          value={this.props.squares[i]}
-          onClick={() => this.props.onClick(i)}
+          value={props.squares[i]}
+          onClick={() => props.onClick(i)}
           winLine={true}
         />
       );
     }
     return (
       <Square
-        value={this.props.squares[i]}
-        onClick={() => this.props.onClick(i)}
+        value={props.squares[i]}
+        onClick={() => props.onClick(i)}
         winLine={false}
       />
     );
-  }
+  };
 
-  render() {
+  const render = () => {
     let i;
     let j;
     var col = [];
     var row = [];
-    for (i = 0; i < 3; i++) {
-      for (j = 0; j < 3; j++) {
-        col.push(this.renderSquare(3 * i + j));
+    for (i = 0; i < boardSize; i++) {
+      for (j = 0; j < boardSize; j++) {
+        col.push(renderSquare(boardSize * i + j));
       }
       row.push(<div className="board-row">{col}</div>);
       col = [];
     }
     return <div>{row}</div>;
-  }
+  };
+
+  return render();
 }
 
 function Game() {
@@ -100,9 +103,9 @@ function Game() {
         ? "Go to move #" +
           move +
           "(" +
-          (step.moves[move - 1] % 3) +
+          (step.moves[move - 1] % boardSize) +
           ", " +
-          parseInt(step.moves[move - 1] / 3) +
+          parseInt(step.moves[move - 1] / boardSize) +
           ")"
         : "Go to game start";
       if (move === stepNumber) {
